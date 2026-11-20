@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
+let cached;
 module.exports = async () => {
-  try { await mongoose.connect("mongodb+srv://mehakbawany2009_db_user:mehakbawany2009@cluster1.wf9rkz6.mongodb.net/inventory_hackathon?retryWrites=true&w=majority"), console.log('MongoDB connected'); }
-  catch (e) { console.error('MongoDB connection failed:', e.message); process.exit(1); }
+  if (mongoose.connection.readyState === 1) return;
+  if (!cached) cached = mongoose.connect("mongodb+srv://mehakbawany2009_db_user:mehakbawany2009@cluster1.wf9rkz6.mongodb.net/inventory_hackathon?retryWrites=true&w=majority"
+).then(() => console.log('MongoDB connected'));
+  try { await cached; } catch (e) { cached = null; throw e; }
 };

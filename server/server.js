@@ -29,6 +29,7 @@ app.use((err, req, res, next) => {
   if (status === 500) console.error(err);
   res.status(status).json({ message });
 });
-
+app.use(async (req, res, next) => { try { await connectDB(); next(); } catch (e) { next(e); } });
 const PORT = process.env.PORT || 5000;
-connectDB().then(() => app.listen(PORT, () => console.log(`API running on :${PORT}`)));
+if (!process.env.VERCEL) app.listen(PORT, () => console.log(`API running on :${PORT}`));
+module.exports = app;
